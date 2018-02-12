@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,11 +10,32 @@ namespace stockExchange.Controllers
 {
     public class StocksController : Controller
     {
-        // GET: Stocks
-        public ActionResult Index()
-        {
+        private ApplicationDbContext _context;
 
-            return View();
+        public StocksController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+
+        // GET: Stocks
+        public ViewResult Index()
+        {
+            var stocks = _context.Stocks.ToList();
+
+            return View(stocks);
+        }
+
+        // Get: Stocks/Details/{id}
+        public ActionResult Details(int id)
+        {
+            var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
+
+            return View(stocks);
         }
     }
 }

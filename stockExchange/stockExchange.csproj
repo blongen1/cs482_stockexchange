@@ -210,6 +210,10 @@
     <Compile Include="Migrations\201802112204369_AddColumnsToStocks.Designer.cs">
       <DependentUpon>201802112204369_AddColumnsToStocks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802112234099_PopulateStocksTable.cs" />
+    <Compile Include="Migrations\201802112234099_PopulateStocksTable.Designer.cs">
+      <DependentUpon>201802112234099_PopulateStocksTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -279,6 +283,7 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Stocks\Index.cshtml" />
+    <Content Include="Views\Stocks\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -297,6 +302,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802112204369_AddColumnsToStocks.resx">
       <DependentUpon>201802112204369_AddColumnsToStocks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802112234099_PopulateStocksTable.resx">
+      <DependentUpon>201802112234099_PopulateStocksTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,7 +1,40 @@
-﻿
+﻿@model IEnumerable<stockExchange.Models.Stocks>
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Stocks";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Stocks</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>Symbol</th>
+        <th>Company Name</th>
+        <th>Previous Close</th>
+        <th>Current Price</th>
+        <th>Volume</th>
+        <th>Day Low</th>
+        <th>Day High</th>
+        <th>Year Low</th>
+        <th>Year High</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var stock in Model)
+        {
+            <tr>
+                <td>@stock.Symbol</td>
+                <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {id = stock.Id}, null)</td>
+                <td>@stock.PreviousClose</td>
+                <td>@stock.CurrentPrice</td>
+                <td>@stock.Volume</td>
+                <td>@stock.DayLow</td>
+                <td>@stock.DayHigh</td>
+                <td>@stock.YearLow</td>
+                <td>@stock.YearHigh</td>
+            </tr>
+        }
+    </tbody>
+</table>

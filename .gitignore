@@ -73,9 +73,3 @@ _[Ss]cripts
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
-
-
-##################
-# Database Files #
-##################
-stockExchange/App_Data/*

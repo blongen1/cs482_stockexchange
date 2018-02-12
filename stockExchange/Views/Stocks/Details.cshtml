@@ -1,0 +1,9 @@
+﻿@model stockExchange.Models.Stocks
+
+@{
+    ViewBag.Title = Model.CompanyName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.CompanyName</h2>
+<p><a href=".." class="btn btn-primary btn-lg">Return to Stocks</a></p>
