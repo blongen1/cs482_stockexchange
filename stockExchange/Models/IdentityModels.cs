@@ -20,6 +20,7 @@ namespace stockExchange.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Stocks> Stocks { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
