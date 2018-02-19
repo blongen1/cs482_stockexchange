@@ -1,9 +1,26 @@
-﻿@model stockExchange.Models.Stocks
+﻿@model stockExchange.ViewModels.TradeStocksViewModel
 
 @{
-    ViewBag.Title = Model.CompanyName;
+    ViewBag.Title = Model.Stocks.CompanyName;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.CompanyName</h2>
+<h2>@Model.Stocks.CompanyName - $@Model.Stocks.CurrentPrice</h2>
+
+@using (Html.BeginForm("Buy", "Portfolio"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Portfolio.Amount)
+        @Html.TextBoxFor(m => m.Portfolio.Amount, new { @class = "form-control"})
+    </div>
+
+    <div class="form-group">
+        @Html.HiddenFor(m => m.Portfolio.Price, new {Value = Model.Stocks.CurrentPrice})
+        @Html.HiddenFor(m => m.Portfolio.Symbol, new {Value = Model.Stocks.Symbol})
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Buy</button>
+}
+
+<br>
 <p><a href=".." class="btn btn-primary btn-lg">Return to Stocks</a></p>

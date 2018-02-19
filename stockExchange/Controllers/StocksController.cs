@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using stockExchange.Models;
+using stockExchange.ViewModels;
 
 namespace stockExchange.Controllers
 {
@@ -34,8 +35,16 @@ namespace stockExchange.Controllers
         public ActionResult Details(int id)
         {
             var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
+            var portfolio = _context.Portfolios.SingleOrDefault();
 
-            return View(stocks);
+            var viewModel = new TradeStocksViewModel
+            {
+                Stocks = stocks,
+                Portfolio = portfolio
+            };
+
+
+            return View(viewModel);
         }
     }
 }
