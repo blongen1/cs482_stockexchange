@@ -35,12 +35,11 @@ namespace stockExchange.Controllers
         public ActionResult Details(int id)
         {
             var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
-            var portfolio = _context.Portfolios.SingleOrDefault();
 
-            var viewModel = new TradeStocksViewModel
+
+            var viewModel = new DetailsViewModel
             {
-                Stocks = stocks,
-                Portfolio = portfolio
+                Stocks = stocks
             };
 
 

@@ -38,7 +38,7 @@ namespace stockExchange.Controllers
         {
 
             _context.Portfolios.Add(portfolio);
-            //_context.SaveChanges();
+            _context.SaveChanges();
 
 
             return RedirectToAction("Index", "Portfolio");

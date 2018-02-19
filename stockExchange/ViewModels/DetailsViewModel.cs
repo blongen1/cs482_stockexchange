@@ -6,7 +6,7 @@ using stockExchange.Models;
 
 namespace stockExchange.ViewModels
 {
-    public class TradeStocksViewModel
+    public class DetailsViewModel
     {
         public Stocks Stocks { get; set; }
         public Portfolio Portfolio { get; set; }
