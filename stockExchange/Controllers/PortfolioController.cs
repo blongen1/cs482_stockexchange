@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using stockExchange.Models;
 using stockExchange.ViewModels;
 
@@ -36,6 +37,16 @@ namespace stockExchange.Controllers
         [HttpPost]
         public ActionResult Buy(Portfolio portfolio)
         {
+            portfolio.UserId = User.Identity.GetUserId();
+
+            try
+            {
+                portfolio.Time = DateTime.Now.ToString();
+            }
+            catch (Exception)
+            {
+                return HttpNotFound();
+            }
 
             _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
