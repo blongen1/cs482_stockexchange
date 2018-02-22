@@ -16,6 +16,9 @@ namespace stockExchange.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public double Cash { get; set; }
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
