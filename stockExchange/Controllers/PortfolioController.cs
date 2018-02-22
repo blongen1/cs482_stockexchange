@@ -29,7 +29,14 @@ namespace stockExchange.Controllers
         public ActionResult Index()
         {
 
-            var portfolio = new Portfolio() {Symbol = "NVDA"};
+            var userId = User.Identity.GetUserId();
+
+            if (userId == null)
+            {
+                return HttpNotFound();
+            }
+
+            var portfolio = _context.Portfolios.ToList().Where(t => t.UserId == userId);
 
             return View(portfolio);
         }

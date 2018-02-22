@@ -1,8 +1,38 @@
-﻿@model stockExchange.Models.Portfolio
+﻿@using stockExchange.Models
+@model IEnumerable<stockExchange.Models.Portfolio>
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.Symbol</h2>
+@if (Model == null)
+{
+    <h2>You don't have any stocks yet!</h2>
+}
+else
+{
+    <h2>Portfolio</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Price Purchased</th>
+            <th>Amount</th>
+            <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var portfolio in Model)
+        {
+            <tr>
+                <td>@portfolio.Symbol</td>
+                <td>@portfolio.Price</td>
+                <td>@portfolio.Amount</td>
+                <td>@portfolio.Time</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
