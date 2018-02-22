@@ -24,8 +24,13 @@ namespace stockExchange.Controllers
         }
 
         // GET: Stocks
-        public ViewResult Index()
+        public ActionResult Index()
         {
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToRoute(new { controller = "Account", action = "Login" });
+            }
+
             var stocks = _context.Stocks.ToList();
 
             return View(stocks);
@@ -34,6 +39,12 @@ namespace stockExchange.Controllers
         // Get: Stocks/Details/{id}
         public ActionResult Details(int id)
         {
+
+            if (!Request.IsAuthenticated)
+            {
+                return RedirectToRoute(new { controller = "Account", action = "Login" });
+            }
+
             var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
 
 

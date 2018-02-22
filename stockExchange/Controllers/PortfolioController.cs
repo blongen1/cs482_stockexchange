@@ -33,7 +33,7 @@ namespace stockExchange.Controllers
 
             if (userId == null)
             {
-                return HttpNotFound();
+                return RedirectToRoute(new {controller = "Account", action="Login"});
             }
 
             var portfolio = _context.Portfolios.ToList().Where(t => t.UserId == userId);

@@ -1,29 +1,33 @@
-﻿@using stockExchange.Models
-@model IEnumerable<stockExchange.Models.Portfolio>
+﻿@model IEnumerable<stockExchange.Models.Portfolio>
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model == null)
+<h2>Portfolio</h2>
+
+@if (!@Model.Any())
 {
-    <h2>You don't have any stocks yet!</h2>
+    <h4>
+        You don't have any stocks yet!
+        <br>
+        <br>
+        <a href="/Stocks" class="btn btn-primary btn-lg">Buy Stocks &raquo;</a>
+    </h4>
 }
 else
 {
-    <h2>Portfolio</h2>
-
-    <table class="table table-bordered table-hover">
-        <thead>
+<table class="table table-bordered table-hover">
+    <thead>
         <tr>
             <th>Symbol</th>
             <th>Price Purchased</th>
             <th>Amount</th>
             <th>Time</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         @foreach (var portfolio in Model)
         {
             <tr>
@@ -33,6 +37,6 @@ else
                 <td>@portfolio.Time</td>
             </tr>
         }
-        </tbody>
-    </table>
+    </tbody>
+</table>
 }
