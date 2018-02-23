@@ -52,20 +52,31 @@ namespace stockExchange.Controllers
 
             var userid = User.Identity.GetUserId();
 
+            var stock = _context.Stocks.ToList().SingleOrDefault(t => t.Symbol == portfolio.Symbol);
+            
             portfolio.UserId = userid;
 
             var user = _context.Users.SingleOrDefault(t => t.Id == userid);
 
             if (user != null)
             {
+                if (portfolio.Amount < 0)
+                {
+                    TempData["error"] = "You must enter a positive number!";
+                    return RedirectToAction("Details", "Stocks", new { id = stock.Id });
+                }
+
                 var newCashValue = user.Cash - portfolio.Amount * portfolio.Price;
                 if (newCashValue < 0)
                 {
-                    return Redirect("..");
+                    TempData["error"] = "You don't have enough cash for that! \nMaximum number of stocks possible: " + Math.Floor(user.Cash/portfolio.Price);
+                    return RedirectToAction("Details", "Stocks", new {id = stock.Id});
                 }
+
                 user.Cash = newCashValue;
                 _context.SaveChanges();
             }
+            
 
             try
             {

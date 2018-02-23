@@ -10,6 +10,11 @@
 
 <h3>You currently have: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3>
 
+@if (TempData["error"] != null)
+{
+    <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
+}
+
 @using (Html.BeginForm("Buy", "Portfolio"))
 {
     <div class="form-group">
