@@ -44,7 +44,28 @@ namespace stockExchange.Controllers
         [HttpPost]
         public ActionResult Buy(Portfolio portfolio)
         {
-            portfolio.UserId = User.Identity.GetUserId();
+
+            if (!Request.IsAuthenticated)
+            {
+                return HttpNotFound();
+            }
+
+            var userid = User.Identity.GetUserId();
+
+            portfolio.UserId = userid;
+
+            var user = _context.Users.SingleOrDefault(t => t.Id == userid);
+
+            if (user != null)
+            {
+                var newCashValue = user.Cash - portfolio.Amount * portfolio.Price;
+                if (newCashValue < 0)
+                {
+                    return Redirect("..");
+                }
+                user.Cash = newCashValue;
+                _context.SaveChanges();
+            }
 
             try
             {

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<stockExchange.Models.Portfolio>
+﻿@using stockExchange.Extensions
+@model IEnumerable<stockExchange.Models.Portfolio>
 
 @{
     ViewBag.Title = "Index";
@@ -6,6 +7,7 @@
 }
 
 <h2>Portfolio</h2>
+<h3>You currently have: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3>
 
 @if (!@Model.Any())
 {
