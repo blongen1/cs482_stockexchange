@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using stockExchange.Models;
 using stockExchange.ViewModels;
 
@@ -47,12 +48,27 @@ namespace stockExchange.Controllers
 
             var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
 
+            if (stocks == null)
+            {
+                return HttpNotFound();
+            }
+
+            var owned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
+                .Where(t => t.Symbol == stocks.Symbol);
+
+
+            var amountOwned = 0;
+
+            foreach (var stock in owned)
+            {
+                amountOwned += stock.Amount;
+            }
 
             var viewModel = new DetailsViewModel
             {
-                Stocks = stocks
+                Stocks = stocks,
+                AmountOwned = amountOwned
             };
-
 
             return View(viewModel);
         }

@@ -10,6 +10,6 @@ namespace stockExchange.ViewModels
     {
         public Stocks Stocks { get; set; }
         public Portfolio Portfolio { get; set; }
-
+        public int AmountOwned { get; set; }
     }
 }

@@ -15,6 +15,7 @@
     <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
 }
 
+
 @using (Html.BeginForm("Buy", "Portfolio"))
 {
     <div class="form-group">
@@ -28,6 +29,26 @@
     </div>
     
     <button type="submit" class="btn btn-primary">Buy</button>
+}
+
+
+@if (Model.AmountOwned != 0)
+{
+    using (Html.BeginForm("Sell", "Portfolio"))
+     {
+         <h3>You currently own @Model.AmountOwned stocks of @Model.Stocks.Symbol</h3>
+         <div class="form-group">
+             @Html.LabelFor(m => m.Portfolio.Amount)
+             @Html.TextBoxFor(m => m.Portfolio.Amount, new { @class = "form-control"})
+         </div>
+
+         <div class="form-group">
+             @Html.HiddenFor(m => m.Portfolio.Price, new {Value = Model.Stocks.CurrentPrice})
+             @Html.HiddenFor(m => m.Portfolio.Symbol, new {Value = Model.Stocks.Symbol})
+         </div>
+    
+         <button type="submit" class="btn btn-primary">Sell</button>
+     }
 }
 
 <br>
