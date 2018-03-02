@@ -13,5 +13,6 @@ namespace stockExchange.Models
         public double Price { get; set; }
         public int Amount { get; set; }
         public string Time { get; set; }
+        public string TransactionType { get; set; }
     }
 }

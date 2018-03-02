@@ -23,8 +23,9 @@ else
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
+            <th>Type</th>
             <th>Symbol</th>
-            <th>Price Purchased</th>
+            <th>Price</th>
             <th>Amount</th>
             <th>Time</th>
         </tr>
@@ -32,7 +33,9 @@ else
     <tbody>
         @foreach (var portfolio in Model)
         {
+            
             <tr>
+                <td>@portfolio.TransactionType</td>
                 <td>@portfolio.Symbol</td>
                 <td>@portfolio.Price</td>
                 <td>@portfolio.Amount</td>

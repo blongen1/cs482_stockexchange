@@ -228,6 +228,10 @@
     <Compile Include="Migrations\201802220101577_AddCashToUser.Designer.cs">
       <DependentUpon>201802220101577_AddCashToUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803021529243_AddTransactionTypeToPortfolio.cs" />
+    <Compile Include="Migrations\201803021529243_AddTransactionTypeToPortfolio.Designer.cs">
+      <DependentUpon>201803021529243_AddTransactionTypeToPortfolio.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -331,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802220101577_AddCashToUser.resx">
       <DependentUpon>201802220101577_AddCashToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803021529243_AddTransactionTypeToPortfolio.resx">
+      <DependentUpon>201803021529243_AddTransactionTypeToPortfolio.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

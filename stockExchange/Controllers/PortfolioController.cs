@@ -60,7 +60,7 @@ namespace stockExchange.Controllers
 
             if (user != null)
             {
-                if (portfolio.Amount < 0)
+                if (portfolio.Amount <= 0)
                 {
                     TempData["error"] = "You must enter a positive number!";
                     return RedirectToAction("Details", "Stocks", new { id = stock.Id });
@@ -74,7 +74,6 @@ namespace stockExchange.Controllers
                 }
 
                 user.Cash = newCashValue;
-                _context.SaveChanges();
             }
             
 
@@ -87,6 +86,7 @@ namespace stockExchange.Controllers
                 return HttpNotFound();
             }
 
+            portfolio.TransactionType = "Buy";
             _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
 
@@ -113,21 +113,18 @@ namespace stockExchange.Controllers
 
             if (user != null)
             {
-                if (portfolio.Amount < 0)
+                if (portfolio.Amount <= 0)
                 {
                     TempData["error"] = "You must enter a positive number!";
                     return RedirectToAction("Details", "Stocks", new { id = stock.Id });
                 }
 
-                var owned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
-                    .Where(t => t.Symbol == portfolio.Symbol);
-
-                var amountOwned = 0;
-
-                foreach (var stk in owned)
-                {
-                    amountOwned += stk.Amount;
-                }
+                var amountOwned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
+                                      .Where(t => t.Symbol == portfolio.Symbol).Where(t => t.TransactionType == "Buy")
+                                      .Sum(t => t.Amount)
+                                  - _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId()).Where(
+                                          t => t.Symbol == portfolio.Symbol).Where(t => t.TransactionType == "Sell")
+                                      .Sum(t => t.Amount);
 
                 if (amountOwned < portfolio.Amount)
                 {
@@ -135,23 +132,19 @@ namespace stockExchange.Controllers
                     return RedirectToAction("Details", "Stocks", new { id = stock.Id });
                 }
 
-                var sellAmount = portfolio.Amount;
-
-                foreach (var stk in owned)
+                try
                 {
-                    if (stk.Amount - portfolio.Amount >= 0)
-                    {
-                        stk.Amount -= portfolio.Amount;
-                        portfolio.Amount = 0;
-                    }
-                    else
-                    {
-                        portfolio.Amount -= stk.Amount;
-                        stk.Amount = 0;
-                    }
+                    portfolio.Time = DateTime.Now.ToString();
+                }
+                catch (Exception)
+                {
+                    return HttpNotFound();
                 }
 
-                user.Cash += sellAmount * portfolio.Price;
+                user.Cash += portfolio.Amount * portfolio.Price;
+                portfolio.TransactionType = "Sell";
+                _context.Portfolios.Add(portfolio);
+                
                 _context.SaveChanges();
             }
 
@@ -165,7 +158,6 @@ namespace stockExchange.Controllers
                 return HttpNotFound();
             }
 
-            _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
 
 

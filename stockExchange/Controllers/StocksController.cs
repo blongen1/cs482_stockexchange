@@ -53,17 +53,13 @@ namespace stockExchange.Controllers
                 return HttpNotFound();
             }
 
-            var owned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
-                .Where(t => t.Symbol == stocks.Symbol);
-
-
-            var amountOwned = 0;
-
-            foreach (var stock in owned)
-            {
-                amountOwned += stock.Amount;
-            }
-
+            var amountOwned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
+                                  .Where(t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Buy")
+                                  .Sum(t => t.Amount)
+                              - _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId()).Where(
+                                  t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Sell")
+                                  .Sum(t => t.Amount);
+            
             var viewModel = new DetailsViewModel
             {
                 Stocks = stocks,
