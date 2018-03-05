@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Portfolio</h2>
+<h2>Transaction History</h2>
 <h3>You currently have: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3>
 
 @if (!@Model.Any())
@@ -20,8 +20,8 @@
 }
 else
 {
-<table class="table table-bordered table-hover">
-    <thead>
+    <table class="table table-bordered table-hover">
+        <thead>
         <tr>
             <th>Type</th>
             <th>Symbol</th>
@@ -29,22 +29,21 @@ else
             <th>Amount</th>
             <th>Time</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (var portfolio in Model)
         {
+            
             <tr>
                 <td>@portfolio.TransactionType</td>
                 <td>@portfolio.Symbol</td>
                 <td>@portfolio.Price</td>
                 <td>@portfolio.Amount</td>
                 <td>@portfolio.Time</td>
-                <td>@Html.ActionLink("Sell", "Details", "Stocks", new {symbol = portfolio.Symbol}, null)</td>
             </tr>
         }
-    </tbody>
-</table>
-  
-<p><a href="..\Portfolio/Transactions" class="btn btn-primary btn-lg">View Transactions &raquo;</a></p>
-
+        </tbody>
+    </table>
 }
+
+<p><a href="." class="btn btn-primary btn-lg">Return to Portfolio &raquo;</a></p>

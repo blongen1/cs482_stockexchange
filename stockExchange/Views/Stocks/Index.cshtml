@@ -26,7 +26,7 @@
         {
             <tr>
                 <td>@stock.Symbol</td>
-                <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {id = stock.Id}, null)</td>
+                <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {symbol = stock.Symbol}, null)</td>
                 <td>@stock.PreviousClose</td>
                 <td>@stock.CurrentPrice</td>
                 <td>@stock.Volume</td>

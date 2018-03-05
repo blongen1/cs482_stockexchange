@@ -38,7 +38,7 @@ namespace stockExchange.Controllers
         }
 
         // Get: Stocks/Details/{id}
-        public ActionResult Details(int id)
+        public ActionResult Details(string symbol)
         {
 
             if (!Request.IsAuthenticated)
@@ -46,7 +46,7 @@ namespace stockExchange.Controllers
                 return RedirectToRoute(new { controller = "Account", action = "Login" });
             }
 
-            var stocks = _context.Stocks.SingleOrDefault(c => c.Id == id);
+            var stocks = _context.Stocks.SingleOrDefault(c => c.Symbol == symbol);
 
             if (stocks == null)
             {

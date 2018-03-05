@@ -41,6 +41,23 @@ namespace stockExchange.Controllers
             return View(portfolio);
         }
 
+        // GET: Portfolio/Transactions
+        public ActionResult Transactions()
+        {
+
+            var userId = User.Identity.GetUserId();
+
+            if (userId == null)
+            {
+                return RedirectToRoute(new { controller = "Account", action = "Login" });
+            }
+
+            var portfolio = _context.Portfolios.ToList().Where(t => t.UserId == userId);
+
+            return View(portfolio);
+        }
+
+
         [HttpPost]
         public ActionResult Buy(Portfolio portfolio)
         {
@@ -63,17 +80,18 @@ namespace stockExchange.Controllers
                 if (portfolio.Amount <= 0)
                 {
                     TempData["error"] = "You must enter a positive number!";
-                    return RedirectToAction("Details", "Stocks", new { id = stock.Id });
+                    return RedirectToAction("Details", "Stocks", new { symbol = stock.Symbol });
                 }
 
                 var newCashValue = user.Cash - portfolio.Amount * portfolio.Price;
                 if (newCashValue < 0)
                 {
                     TempData["error"] = "You don't have enough cash for that! \nMaximum number of stocks possible: " + Math.Floor(user.Cash/portfolio.Price);
-                    return RedirectToAction("Details", "Stocks", new {id = stock.Id});
+                    return RedirectToAction("Details", "Stocks", new { symbol = stock.Symbol });
                 }
 
                 user.Cash = newCashValue;
+                
             }
             
 
@@ -89,7 +107,6 @@ namespace stockExchange.Controllers
             portfolio.TransactionType = "Buy";
             _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
-
 
             return RedirectToAction("Index", "Portfolio");
         }
@@ -116,7 +133,7 @@ namespace stockExchange.Controllers
                 if (portfolio.Amount <= 0)
                 {
                     TempData["error"] = "You must enter a positive number!";
-                    return RedirectToAction("Details", "Stocks", new { id = stock.Id });
+                    return RedirectToAction("Details", "Stocks", new { symbol = stock.Symbol });
                 }
 
                 var amountOwned = _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId())
@@ -129,7 +146,7 @@ namespace stockExchange.Controllers
                 if (amountOwned < portfolio.Amount)
                 {
                     TempData["error"] = "You only own " + amountOwned + " stocks of " + stock.CompanyName +"!";
-                    return RedirectToAction("Details", "Stocks", new { id = stock.Id });
+                    return RedirectToAction("Details", "Stocks", new { symbol = stock.Symbol });
                 }
 
                 try
@@ -142,10 +159,7 @@ namespace stockExchange.Controllers
                 }
 
                 user.Cash += portfolio.Amount * portfolio.Price;
-                portfolio.TransactionType = "Sell";
-                _context.Portfolios.Add(portfolio);
-                
-                _context.SaveChanges();
+
             }
 
 
@@ -158,6 +172,8 @@ namespace stockExchange.Controllers
                 return HttpNotFound();
             }
 
+            portfolio.TransactionType = "Sell";
+            _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
 
 
