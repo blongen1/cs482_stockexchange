@@ -22,19 +22,21 @@
     </tr>
     </thead>
     <tbody>
-        @foreach (var stock in Model)
-        {
-            <tr>
-                <td>@stock.Symbol</td>
-                <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {symbol = stock.Symbol}, null)</td>
-                <td>@stock.PreviousClose</td>
-                <td>@stock.CurrentPrice</td>
-                <td>@stock.Volume</td>
-                <td>@stock.DayLow</td>
-                <td>@stock.DayHigh</td>
-                <td>@stock.YearLow</td>
-                <td>@stock.YearHigh</td>
-            </tr>
-        }
+    @foreach (var stock in Model)
+    {
+        <tr>
+            <td>@stock.Symbol</td>
+            <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {symbol = stock.Symbol}, null)</td>
+            <td>@stock.PreviousClose</td>
+            <td>@stock.CurrentPrice</td>
+            <td>@stock.Volume</td>
+            <td>@stock.DayLow</td>
+            <td>@stock.DayHigh</td>
+            <td>@stock.YearLow</td>
+            <td>@stock.YearHigh</td>
+        </tr>
+    }
     </tbody>
 </table>
+
+<a href="/Portfolio/Index" class="btn btn-primary btn-lg">View Portfolio &raquo;</a>

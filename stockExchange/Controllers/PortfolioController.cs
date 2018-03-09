@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using stockExchange.Models;
 using stockExchange.ViewModels;
 
@@ -12,12 +14,43 @@ namespace stockExchange.Controllers
 {
     public class PortfolioController : Controller
     {
-
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         private ApplicationDbContext _context;
 
         public PortfolioController()
         {
             _context = new ApplicationDbContext();
+        }
+
+        public PortfolioController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -38,7 +71,31 @@ namespace stockExchange.Controllers
 
             var portfolio = _context.Portfolios.ToList().Where(t => t.UserId == userId);
 
-            return View(portfolio);
+            var symbolsPurchased = portfolio.Select(t => t.Symbol).Distinct();
+
+            var returnPortfolio = new List<Portfolio>();
+            var id = 0;
+            foreach (var s in symbolsPurchased)
+            {
+                var amt = _context.Portfolios.ToList().Where(t => t.UserId == userId)
+                              .Where(t => t.Symbol == s).Where(t => t.TransactionType == "Buy").Sum(t => t.Amount)
+                          - _context.Portfolios.ToList().Where(t => t.UserId == userId).Where(
+                                  t => t.Symbol == s).Where(t => t.TransactionType == "Sell")
+                              .Sum(t => t.Amount);
+                if (amt > 0)
+                {
+                    var prc = _context.Portfolios.ToList().Where(t => t.UserId == userId).Where(t => t.Symbol == s)
+                        .Where(t => t.TransactionType == "Buy").Average(t => t.Price);
+                    var time = _context.Portfolios.ToList().Where(t => t.UserId == userId).Where(t => t.Symbol == s)
+                        .Where(t => t.TransactionType == "Buy").Last().Time;
+
+                    returnPortfolio.Add(new Portfolio() {Amount = amt, Id = id, Price = prc, Symbol = s, Time = time, TransactionType = "Owned", UserId = userId});
+                    id += 1;
+                }
+
+            }
+
+            return View(returnPortfolio);
         }
 
         // GET: Portfolio/Transactions
@@ -59,7 +116,7 @@ namespace stockExchange.Controllers
 
 
         [HttpPost]
-        public ActionResult Buy(Portfolio portfolio)
+        public async Task<ActionResult> Buy(Portfolio portfolio)
         {
 
             if (!Request.IsAuthenticated)
@@ -108,11 +165,17 @@ namespace stockExchange.Controllers
             _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
 
+            var u = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (u != null)
+            {
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            }
+
             return RedirectToAction("Index", "Portfolio");
         }
 
         [HttpPost]
-        public ActionResult Sell(Portfolio portfolio)
+        public async Task<ActionResult> Sell(Portfolio portfolio)
         {
 
             if (!Request.IsAuthenticated)
@@ -176,6 +239,11 @@ namespace stockExchange.Controllers
             _context.Portfolios.Add(portfolio);
             _context.SaveChanges();
 
+            var u = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (u != null)
+            {
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            }
 
             return RedirectToAction("Index", "Portfolio");
         }

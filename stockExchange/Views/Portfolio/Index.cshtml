@@ -1,4 +1,5 @@
 ﻿@using stockExchange.Extensions
+@using stockExchange.Models
 @model IEnumerable<stockExchange.Models.Portfolio>
 
 @{
@@ -12,10 +13,12 @@
 @if (!@Model.Any())
 {
     <h4>
-        You don't have any stocks yet!
+        You don't currently own any stocks!
         <br>
         <br>
         <a href="/Stocks" class="btn btn-primary btn-lg">Buy Stocks &raquo;</a>
+        <br><br>
+        <a href="..\Portfolio/Transactions" class="btn btn-primary btn-lg">View Transactions &raquo;</a>
     </h4>
 }
 else
@@ -28,6 +31,7 @@ else
             <th>Price</th>
             <th>Amount</th>
             <th>Time</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -45,6 +49,8 @@ else
     </tbody>
 </table>
   
-<p><a href="..\Portfolio/Transactions" class="btn btn-primary btn-lg">View Transactions &raquo;</a></p>
+    <a href="..\Portfolio/Transactions" class="btn btn-primary btn-lg">View Transactions &raquo;</a>
+    <br><br>
+    <a href="/Stocks" class="btn btn-primary btn-lg">Buy Stocks &raquo;</a>
 
 }
