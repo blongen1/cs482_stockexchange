@@ -1,5 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using Hangfire;
+using Microsoft.Owin;
 using Owin;
+using System;
 
 [assembly: OwinStartupAttribute(typeof(stockExchange.Startup))]
 namespace stockExchange
@@ -9,6 +11,9 @@ namespace stockExchange
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
         }
     }
 }
