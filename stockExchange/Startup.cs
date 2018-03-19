@@ -1,7 +1,8 @@
-﻿using Hangfire;
+﻿using System;
+using Hangfire;
 using Microsoft.Owin;
 using Owin;
-using System;
+using stockExchange.Controllers;
 
 [assembly: OwinStartupAttribute(typeof(stockExchange.Startup))]
 namespace stockExchange
@@ -12,6 +13,7 @@ namespace stockExchange
         {
             ConfigureAuth(app);
             GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
+            RecurringJob.AddOrUpdate(() => StocksController.UpdateStockPrices(), Cron.MinuteInterval(15));
             app.UseHangfireDashboard();
             app.UseHangfireServer();
         }

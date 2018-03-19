@@ -29,7 +29,7 @@ namespace stockExchange.Controllers
         {
             if (!Request.IsAuthenticated)
             {
-                return RedirectToRoute(new { controller = "Account", action = "Login" });
+                return RedirectToRoute(new {controller = "Account", action = "Login"});
             }
 
             var stocks = _context.Stocks.ToList();
@@ -43,7 +43,7 @@ namespace stockExchange.Controllers
 
             if (!Request.IsAuthenticated)
             {
-                return RedirectToRoute(new { controller = "Account", action = "Login" });
+                return RedirectToRoute(new {controller = "Account", action = "Login"});
             }
 
             var stocks = _context.Stocks.SingleOrDefault(c => c.Symbol == symbol);
@@ -57,9 +57,9 @@ namespace stockExchange.Controllers
                                   .Where(t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Buy")
                                   .Sum(t => t.Amount)
                               - _context.Portfolios.ToList().Where(t => t.UserId == User.Identity.GetUserId()).Where(
-                                  t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Sell")
+                                      t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Sell")
                                   .Sum(t => t.Amount);
-            
+
             var viewModel = new DetailsViewModel
             {
                 Stocks = stocks,
@@ -67,6 +67,11 @@ namespace stockExchange.Controllers
             };
 
             return View(viewModel);
+        }
+
+        public static void UpdateStockPrices()
+        {
+            System.Diagnostics.Debug.WriteLine("Hello, world!");
         }
     }
 }
