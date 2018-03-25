@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -69,9 +70,43 @@ namespace stockExchange.Controllers
             return View(viewModel);
         }
 
-        public static void UpdateStockPrices()
+        public void UpdateStockPrices()
         {
-            System.Diagnostics.Debug.WriteLine("Hello, world!");
+
+            string csvData;
+
+            using (WebClient web = new WebClient())
+            {
+                csvData = web.DownloadString("https://docs.google.com/spreadsheets/d/e/2PACX-1vTocmWnR0qxPTjkO8xIL5TWZ9TZYJUyNAHs_oN0k6QpV0VSGuVPwdXZoiksodf7BDnN8hr9lKZXJSTC/pub?gid=0&single=true&output=csv");
+            }
+
+            var stocks = _context.Stocks.ToList();
+
+            string[] rows = csvData.Replace("\r", "").Split('\n');
+
+
+            foreach (var s in stocks)
+            {
+
+                string[] cols = rows[s.Id-1].Split(',');
+
+                s.PreviousClose = Convert.ToDouble(cols[2]);
+                s.CurrentPrice = Convert.ToDouble(cols[3]);
+
+                if (Convert.ToInt32(cols[4]) > 0)
+                {
+                    s.Volume = Convert.ToInt32(cols[4]);
+                }
+                
+                s.DayLow = Convert.ToDouble(cols[5]);
+                s.DayHigh = Convert.ToDouble(cols[6]);
+                s.YearLow = Convert.ToDouble(cols[7]);
+                s.YearHigh = Convert.ToDouble(cols[8]);
+                
+            }
+
+            _context.SaveChanges();
+
         }
     }
 }
