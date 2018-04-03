@@ -20,30 +20,39 @@
 }
 else
 {
-    <table class="table table-bordered table-hover">
+    <table id="transactions" class="table table-bordered table-hover">
         <thead>
-        <tr>
-            <th>Type</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>Amount</th>
-            <th>Time</th>
-        </tr>
+            <tr>
+                <th>Type</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Amount</th>
+                <th>Time</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var portfolio in Model)
-        {
-            
-            <tr>
-                <td>@portfolio.TransactionType</td>
-                <td>@portfolio.Symbol</td>
-                <td>@portfolio.Price</td>
-                <td>@portfolio.Amount</td>
-                <td>@portfolio.Time</td>
-            </tr>
-        }
+            @foreach (var portfolio in Model)
+            {
+
+                <tr>
+                    <td>@portfolio.TransactionType</td>
+                    <td>@portfolio.Symbol</td>
+                    <td>@portfolio.Price</td>
+                    <td>@portfolio.Amount</td>
+                    <td>@portfolio.Time</td>
+                </tr>
+            }
         </tbody>
     </table>
+
+    @section scripts
+    {
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#transactions").DataTable();
+            });
+        </script>
+    }
 }
 
 <p><a href="." class="btn btn-primary btn-lg">Return to Portfolio &raquo;</a></p>

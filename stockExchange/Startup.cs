@@ -13,7 +13,7 @@ namespace stockExchange
         {
             ConfigureAuth(app);
             GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
-            RecurringJob.AddOrUpdate<StocksController>(x => x.UpdateStockPrices(), Cron.MinuteInterval(15));
+            RecurringJob.AddOrUpdate<StocksController>(x => x.UpdateStockPrices(), Cron.Minutely);
             app.UseHangfireDashboard();
             app.UseHangfireServer();
         }
