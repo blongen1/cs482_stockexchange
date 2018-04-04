@@ -74,6 +74,13 @@ namespace stockExchange.Controllers
             var symbolsPurchased = portfolio.Select(t => t.Symbol).Distinct();
 
             var returnPortfolio = new List<Portfolio>();
+
+            var currentPrice = new List<double>();
+
+            var totalValue = new List<double>();
+
+            var gainLoss = new List<double>();
+
             var id = 0;
             foreach (var s in symbolsPurchased)
             {
@@ -102,12 +109,26 @@ namespace stockExchange.Controllers
                         type = "Unchanged";
                     }
                     returnPortfolio.Add(new Portfolio() {Amount = amt, Id = id, Price = prc, Symbol = s, Time = time, TransactionType = type, UserId = userId});
+                    
+                    currentPrice.Add(_context.Stocks.SingleOrDefault(t => t.Symbol == s).CurrentPrice);
+                    totalValue.Add(currentPrice.Last()*amt);
+                    gainLoss.Add(totalValue.Last() - amt*prc);
+
                     id += 1;
+
                 }
 
             }
 
-            return View(returnPortfolio);
+            var viewModel = new PortfolioViewModel()
+            {
+                Portfolio = returnPortfolio,
+                CurrentPrice = currentPrice,
+                TotalValue = totalValue,
+                GainLoss = gainLoss
+            };
+
+            return View(viewModel);
         }
 
         // GET: Portfolio/Transactions

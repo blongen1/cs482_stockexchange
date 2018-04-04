@@ -1,16 +1,34 @@
-﻿@using stockExchange.Extensions
-@using stockExchange.Models
-@model IEnumerable<stockExchange.Models.Portfolio>
+﻿@using Microsoft.AspNet.Identity
+@using stockExchange.Extensions
+@model stockExchange.ViewModels.PortfolioViewModel
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Portfolio";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Portfolio</h2>
+<style type="text/css">
+    .Unchanged {
+        background-color: rgba(80, 80, 80, 0.3);
+    }
+    .Loss {
+        background-color: rgba(255, 50, 50, 0.5);
+    }
+    .Gain {
+        background-color: rgba(50, 255, 0, 0.2);
+    }
+    .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+</style>
+
+<h2>Portfolio for @User.Identity.GetUserName()</h2>
+
+<canvas id="myChart" width="400" height="100"></canvas>
+
 <h3>You currently have: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3>
 
-@if (!@Model.Any())
+@if (!@Model.Portfolio.Any())
 {
     <h4>
         You don't currently own any stocks!
@@ -23,41 +41,32 @@
 }
 else
 {
-
-    <style type="text/css">
-        .Unchanged {
-            background-color: rgba(80, 80, 80, 0.3);
-        }
-        .Loss {
-             background-color: rgba(255, 50, 50, 0.5);
-        }
-        .Gain {
-            background-color: rgba(50, 255, 0, 0.2);
-        }
-        .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-    </style>
-
+    <h4>
+        Currently owned stocks:
+    </h4>
     <table id="portfolio" class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Type</th>
                 <th>Symbol</th>
-                <th>Price</th>
                 <th>Amount</th>
+                <th>Price Paid</th>
+                <th>Current Price</th>
+                <th>Gain/Loss</th>
+                <th>Total Value</th>
                 <th>Time</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var portfolio in Model)
+            @foreach (var portfolio in @Model.Portfolio)
             {
                 <tr class="@portfolio.TransactionType">
-                    <td>@portfolio.TransactionType</td>
                     <td>@portfolio.Symbol</td>
-                    <td>@portfolio.Price</td>
                     <td>@portfolio.Amount</td>
+                    <td>@portfolio.Price</td>
+                    <td>@Model.CurrentPrice[portfolio.Id]</td>
+                    <td>@Model.GainLoss[portfolio.Id]</td>
+                    <td>@Model.TotalValue[portfolio.Id]</td>
                     <td>@portfolio.Time</td>
                     <td>@Html.ActionLink("Sell", "Details", "Stocks", new { symbol = portfolio.Symbol }, null)</td>
                 </tr>
@@ -70,9 +79,6 @@ else
     <a href="/Stocks" class="btn btn-primary btn-lg">Buy Stocks &raquo;</a>
 
 }
-
-<canvas id="myChart" width="400" height="100"></canvas>
-
 
 @section scripts
 {
