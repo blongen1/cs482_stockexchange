@@ -88,8 +88,20 @@ namespace stockExchange.Controllers
                         .Where(t => t.TransactionType == "Buy").Average(t => t.Price);
                     var time = _context.Portfolios.ToList().Where(t => t.UserId == userId).Where(t => t.Symbol == s)
                         .Where(t => t.TransactionType == "Buy").Last().Time;
-
-                    returnPortfolio.Add(new Portfolio() {Amount = amt, Id = id, Price = prc, Symbol = s, Time = time, TransactionType = "Owned", UserId = userId});
+                    var type = "";
+                    if (_context.Stocks.SingleOrDefault(t => t.Symbol == s).CurrentPrice - prc > 0)
+                    {
+                        type = "Gain";
+                    }
+                    else if (_context.Stocks.SingleOrDefault(t => t.Symbol == s).CurrentPrice - prc < 0)
+                    {
+                        type = "Loss";
+                    }
+                    else
+                    {
+                        type = "Unchanged";
+                    }
+                    returnPortfolio.Add(new Portfolio() {Amount = amt, Id = id, Price = prc, Symbol = s, Time = time, TransactionType = type, UserId = userId});
                     id += 1;
                 }
 

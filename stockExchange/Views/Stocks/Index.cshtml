@@ -7,7 +7,7 @@
 
 <h2>Stocks</h2>
 
-<table class="table table-bordered table-hover">
+<table id="stocks" class="table table-bordered table-hover">
     <thead>
     <tr>
         <th>Symbol</th>
@@ -38,5 +38,14 @@
     }
     </tbody>
 </table>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#stocks").DataTable();
+        });
+    </script>
+}
 
 <a href="/Portfolio/Index" class="btn btn-primary btn-lg">View Portfolio &raquo;</a>
