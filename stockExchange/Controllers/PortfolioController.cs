@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using stockExchange.Extensions;
 using stockExchange.Models;
 using stockExchange.ViewModels;
 
@@ -59,6 +60,7 @@ namespace stockExchange.Controllers
         }
 
         // GET: Portfolio
+        [HttpGet]
         public ActionResult Index()
         {
 
@@ -74,12 +76,12 @@ namespace stockExchange.Controllers
             var symbolsPurchased = portfolio.Select(t => t.Symbol).Distinct();
 
             var returnPortfolio = new List<Portfolio>();
-
             var currentPrice = new List<double>();
-
-            var totalValue = new List<double>();
-
+            var assetValue = new List<double>();
             var gainLoss = new List<double>();
+            var symbolList = new List<string>();
+
+            double totalValue = 0;
 
             var id = 0;
             foreach (var s in symbolsPurchased)
@@ -111,8 +113,10 @@ namespace stockExchange.Controllers
                     returnPortfolio.Add(new Portfolio() {Amount = amt, Id = id, Price = prc, Symbol = s, Time = time, TransactionType = type, UserId = userId});
                     
                     currentPrice.Add(_context.Stocks.SingleOrDefault(t => t.Symbol == s).CurrentPrice);
-                    totalValue.Add(currentPrice.Last()*amt);
-                    gainLoss.Add(totalValue.Last() - amt*prc);
+                    assetValue.Add(currentPrice.Last()*amt);
+                    totalValue += currentPrice.Last() * amt;
+                    gainLoss.Add(assetValue.Last() - amt*prc);
+                    symbolList.Add(s);
 
                     id += 1;
 
@@ -120,14 +124,19 @@ namespace stockExchange.Controllers
 
             }
 
+            assetValue.Add(Convert.ToDouble(User.Identity.GetCash()));
+            symbolList.Add("Buying Power");
+
             var viewModel = new PortfolioViewModel()
             {
                 Portfolio = returnPortfolio,
                 CurrentPrice = currentPrice,
+                AssetValue = assetValue,
+                GainLoss = gainLoss,
                 TotalValue = totalValue,
-                GainLoss = gainLoss
+                SymbolList = symbolList
             };
-
+            
             return View(viewModel);
         }
 

@@ -27,13 +27,13 @@
         <tr>
             <td>@stock.Symbol</td>
             <td>@Html.ActionLink(stock.CompanyName, "Details", "Stocks", new {symbol = stock.Symbol}, null)</td>
-            <td>@stock.PreviousClose</td>
-            <td>@stock.CurrentPrice</td>
+            <td>$@stock.PreviousClose</td>
+            <td>$@stock.CurrentPrice</td>
             <td>@stock.Volume</td>
-            <td>@stock.DayLow</td>
-            <td>@stock.DayHigh</td>
-            <td>@stock.YearLow</td>
-            <td>@stock.YearHigh</td>
+            <td>$@stock.DayLow</td>
+            <td>$@stock.DayHigh</td>
+            <td>$@stock.YearLow</td>
+            <td>$@stock.YearHigh</td>
         </tr>
     }
     </tbody>

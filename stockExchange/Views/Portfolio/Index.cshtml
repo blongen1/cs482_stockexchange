@@ -26,7 +26,8 @@
 
 <canvas id="myChart" width="400" height="100"></canvas>
 
-<h3>You currently have: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3>
+<h3>Total Portfolio Value: $@string.Format("{0:n}", @Model.TotalValue + Convert.ToDouble(User.Identity.GetCash()))</h3>
+<h3>Buying Power: $@string.Format("{0:n}", Convert.ToDouble(User.Identity.GetCash()))</h3><br>
 
 @if (!@Model.Portfolio.Any())
 {
@@ -63,10 +64,10 @@ else
                 <tr class="@portfolio.TransactionType">
                     <td>@portfolio.Symbol</td>
                     <td>@portfolio.Amount</td>
-                    <td>@portfolio.Price</td>
-                    <td>@Model.CurrentPrice[portfolio.Id]</td>
-                    <td>@Model.GainLoss[portfolio.Id]</td>
-                    <td>@Model.TotalValue[portfolio.Id]</td>
+                    <td>$@portfolio.Price</td>
+                    <td>$@Model.CurrentPrice[portfolio.Id]</td>
+                    <td>$@string.Format("{0:n}", @Model.GainLoss[portfolio.Id])</td>
+                    <td>$@Model.AssetValue[portfolio.Id]</td>
                     <td>@portfolio.Time</td>
                     <td>@Html.ActionLink("Sell", "Details", "Stocks", new { symbol = portfolio.Symbol }, null)</td>
                 </tr>
@@ -90,33 +91,65 @@ else
 
 
         var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.5)',
-                        'rgba(54, 162, 235, 0.5)',
-                        'rgba(255, 206, 86, 0.5)',
-                        'rgba(75, 192, 19, 0.5)',
-                        'rgba(153, 102, 255, 0.5)',
-                        'rgba(255, 159, 64, 0.5)'
-                    ]
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
+
+        var myChart = new Chart(ctx,
+            {
+                type: 'pie',
+                data: {
+                    labels: @Html.Raw(Json.Encode(@Model.SymbolList)),
+                    datasets: [
+                        {
+                            label: 'Currency Allocation',
+                            data: @Html.Raw(Json.Encode(@Model.AssetValue)),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 146, 0.5)',
+                                'rgba(75, 192, 19, 0.5)',
+                                'rgba(153, 102, 255, 0.5)',
+                                'rgba(255, 0, 255, 0.5)',
+                                'rgba(255, 0, 0, 0.5)',
+                                'rgba(51, 255, 255, 0.5)',
+                                'rgba(255, 255, 102, 0.5)',
+                                'rgba(178, 255, 108, 0.5)'
+                            ]
                         }
-                    }]
+                    ]
+                },
+
+                options: {
+                    tooltips: {
+                        model: 'label',
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return data.labels[tooltipItem.index] + ': $' + data['datasets'][0]['data'][tooltipItem['index']].toFixed(2);
+                            }
+                        }
+                    },
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
                 }
-            }
-        });
+            });
+
+        setInterval(reloadData, 5000);
+
+        function reloadData() {
+            $.ajax({
+                url: '@(Url.Action("Index", "Portfolio"))',
+                type: "GET",
+                complete : function(result) {
+                    //$('#portfolio').html(result);
+                }
+            });
+
+        }
 
     </script>
 }
