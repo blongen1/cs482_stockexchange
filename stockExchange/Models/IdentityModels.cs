@@ -27,6 +27,7 @@ namespace stockExchange.Models
     {
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Stocks> Stocks { get; set; }
+        public DbSet<PriceHistory> PriceHistory { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

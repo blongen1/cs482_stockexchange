@@ -108,5 +108,28 @@ namespace stockExchange.Controllers
             _context.SaveChanges();
 
         }
+
+        public void BuildPriceHistory()
+        {
+
+            if (DateTime.Now.Hour >= 9 && DateTime.Now.Hour < 16)
+            {
+
+                var priceHistory = _context.PriceHistory.ToList();
+                var stocks = _context.Stocks.ToList();
+
+                foreach (var s in stocks)
+                {
+                    var p = new PriceHistory();
+                    p.Price = s.CurrentPrice;
+                    p.Symbol = s.Symbol;
+                    p.Time = DateTime.Now;
+                    priceHistory.Add(p);
+                }
+
+                _context.SaveChanges();
+            }
+        }
+
     }
 }
