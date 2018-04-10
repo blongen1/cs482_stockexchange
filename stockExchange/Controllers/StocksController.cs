@@ -61,10 +61,37 @@ namespace stockExchange.Controllers
                                       t => t.Symbol == stocks.Symbol).Where(t => t.TransactionType == "Sell")
                                   .Sum(t => t.Amount);
 
+            var dayPrices = new List<double>();
+            int year, month, day = 0;
+            
+
+            // If the current time is before 10am
+            if (DateTime.Now.Hour < 10)
+            {
+                // Use yesterday's date
+                year = DateTime.Now.AddDays(-1).Year;
+                month = DateTime.Now.AddDays(-1).Month;
+                day = DateTime.Now.AddDays(-1).Day;
+            }
+            else {
+                year = DateTime.Now.Year;
+                month = DateTime.Now.Month;
+                day = DateTime.Now.Day;
+            }
+
+            var prices = _context.PriceHistory.Where(t => t.Symbol == symbol).Where(t => t.Time.Year == year && t.Time.Month == month && t.Time.Day == day);
+
+            foreach (var p in prices)
+            {
+                dayPrices.Add(p.Price);
+            }
+
             var viewModel = new DetailsViewModel
             {
                 Stocks = stocks,
-                AmountOwned = amountOwned
+                AmountOwned = amountOwned,
+                DayPrices = dayPrices
+
             };
 
             return View(viewModel);
@@ -109,7 +136,7 @@ namespace stockExchange.Controllers
                 {
                     // Do nothing
 
-                    // (Sometimes this values are null when the market isn't open yet).
+                    // (Sometimes these values are null when the market isn't open yet).
                 }
 
             }

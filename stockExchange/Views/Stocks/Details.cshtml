@@ -67,7 +67,7 @@
                     "1:00pm", "1:15pm", "1:30pm", "1:45pm", "2:00pm", "2:15pm", "2:30pm", "2:45pm", "3:00pm", "3:15pm", "3:30pm", "3:45pm", "4:00pm"],
                 datasets: [{
                     label: 'Stock Price',
-                    data: [12, 19, 3, 5, 2, 3],
+                    data: @Html.Raw(Json.Encode(@Model.DayPrices)),
                     backgroundColor: [
                         'rgba(30, 144, 255, 0.2)'
                     ],
@@ -78,12 +78,21 @@
                 }]
             },
             options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
+                tooltips: {
+                    model: 'label',
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            return 'Price: $' + data['datasets'][0]['data'][tooltipItem['index']].toFixed(2);
                         }
-                    }]
+                    }
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            ticks: {
+                            }
+                        }
+                    ]
                 }
             }
         });
