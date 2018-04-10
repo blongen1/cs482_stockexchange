@@ -97,12 +97,21 @@ namespace stockExchange.Controllers
                 {
                     s.Volume = Convert.ToInt32(cols[4]);
                 }
-                
-                s.DayLow = Convert.ToDouble(cols[5]);
-                s.DayHigh = Convert.ToDouble(cols[6]);
-                s.YearLow = Convert.ToDouble(cols[7]);
-                s.YearHigh = Convert.ToDouble(cols[8]);
-                
+
+                try
+                {
+                    s.DayLow = Convert.ToDouble(cols[5]);
+                    s.DayHigh = Convert.ToDouble(cols[6]);
+                    s.YearLow = Convert.ToDouble(cols[7]);
+                    s.YearHigh = Convert.ToDouble(cols[8]);
+                }
+                catch (Exception ex)
+                {
+                    // Do nothing
+
+                    // (Sometimes this values are null when the market isn't open yet).
+                }
+
             }
 
             _context.SaveChanges();
@@ -112,10 +121,10 @@ namespace stockExchange.Controllers
         public void BuildPriceHistory()
         {
 
-            if (DateTime.Now.Hour >= 9 && DateTime.Now.Hour < 16)
+            if ((DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30 || DateTime.Now.Hour > 9 && DateTime.Now.Hour < 16) 
+                && DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
             {
-
-                var priceHistory = _context.PriceHistory.ToList();
+               
                 var stocks = _context.Stocks.ToList();
 
                 foreach (var s in stocks)
@@ -124,7 +133,7 @@ namespace stockExchange.Controllers
                     p.Price = s.CurrentPrice;
                     p.Symbol = s.Symbol;
                     p.Time = DateTime.Now;
-                    priceHistory.Add(p);
+                    _context.PriceHistory.Add(p);
                 }
 
                 _context.SaveChanges();
