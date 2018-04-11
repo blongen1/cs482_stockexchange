@@ -104,7 +104,7 @@ namespace stockExchange.Controllers
 
             using (WebClient web = new WebClient())
             {
-                csvData = web.DownloadString("https://docs.google.com/spreadsheets/d/e/2PACX-1vTocmWnR0qxPTjkO8xIL5TWZ9TZYJUyNAHs_oN0k6QpV0VSGuVPwdXZoiksodf7BDnN8hr9lKZXJSTC/pub?gid=0&single=true&output=csv");
+                csvData = web.DownloadString("https://docs.google.com/spreadsheets/d/e/2PACX-1vQLPVN5opgmUgOQ3W1JNJQ6VrjxIwtIXVGE_v4wzLUovFpXqG0G1w3wrBM8lXqV1VDKJKL3kholtuRI/pub?output=csv");
             }
 
             var stocks = _context.Stocks.ToList();
@@ -115,7 +115,7 @@ namespace stockExchange.Controllers
             foreach (var s in stocks)
             {
 
-                string[] cols = rows[s.Id-1].Split(',');
+                string[] cols = rows[s.Id-12].Split(',');
 
                 s.PreviousClose = Convert.ToDouble(cols[2]);
                 s.CurrentPrice = Convert.ToDouble(cols[3]);
