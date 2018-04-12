@@ -12,5 +12,6 @@ namespace stockExchange.ViewModels
         public Portfolio Portfolio { get; set; }
         public int AmountOwned { get; set; }
         public List<double> DayPrices { get; set; }
+        public string TimePeriod { get; set; }
     }
 }

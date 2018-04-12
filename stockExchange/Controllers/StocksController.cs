@@ -39,9 +39,9 @@ namespace stockExchange.Controllers
         }
 
         // Get: Stocks/Details/{id}
-        public ActionResult Details(string symbol)
+        public ActionResult Details(string symbol, string timeperiod)
         {
-
+           
             if (!Request.IsAuthenticated)
             {
                 return RedirectToRoute(new {controller = "Account", action = "Login"});
@@ -63,20 +63,59 @@ namespace stockExchange.Controllers
 
             var dayPrices = new List<double>();
             int year, month, day = 0;
-            
+
+            var retrievedDate = DateTime.Now;
 
             // If the current time is before 10am
             if (DateTime.Now.Hour < 10)
             {
-                // Use yesterday's date
-                year = DateTime.Now.AddDays(-1).Year;
-                month = DateTime.Now.AddDays(-1).Month;
-                day = DateTime.Now.AddDays(-1).Day;
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                {
+                    // Use Friday's date
+                    retrievedDate = retrievedDate.AddDays(-3);
+                }
+                else if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    // Use Friday's date
+                    retrievedDate = retrievedDate.AddDays(-2);
+                }
+                else
+                {
+                    // Use yesterday's date
+                    retrievedDate = retrievedDate.AddDays(-1);
+                }
             }
             else {
-                year = DateTime.Now.Year;
-                month = DateTime.Now.Month;
-                day = DateTime.Now.Day;
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    retrievedDate = retrievedDate.AddDays(-2);
+                }
+                else if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    retrievedDate = retrievedDate.AddDays(-1);
+                }
+            }
+
+            if (timeperiod == "yesterday")
+            {
+                if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                {
+                    year = retrievedDate.AddDays(-3).Year;
+                    month = retrievedDate.AddDays(-3).Month;
+                    day = retrievedDate.AddDays(-3).Day;
+                }
+                else
+                {
+                    year = retrievedDate.AddDays(-1).Year;
+                    month = retrievedDate.AddDays(-1).Month;
+                    day = retrievedDate.AddDays(-1).Day;
+                }
+            }
+            else
+            {
+                year = retrievedDate.Year;
+                month = retrievedDate.Month;
+                day = retrievedDate.Day;
             }
 
             var prices = _context.PriceHistory.Where(t => t.Symbol == symbol).Where(t => t.Time.Year == year && t.Time.Month == month && t.Time.Day == day);
@@ -90,7 +129,8 @@ namespace stockExchange.Controllers
             {
                 Stocks = stocks,
                 AmountOwned = amountOwned,
-                DayPrices = dayPrices
+                DayPrices = dayPrices,
+                TimePeriod = timeperiod
 
             };
 
@@ -147,8 +187,8 @@ namespace stockExchange.Controllers
 
         public void BuildPriceHistory()
         {
-
-            if ((DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30 || DateTime.Now.Hour > 9 && DateTime.Now.Hour < 16) 
+            // If the market is currently open
+            if ((DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30 || DateTime.Now.Hour > 9 && DateTime.Now.Hour < 16 || DateTime.Now.Hour == 16 && DateTime.Now.Minute < 15) 
                 && DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
             {
                

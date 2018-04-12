@@ -16,7 +16,16 @@
 }
 
 <canvas id="myChart" width="400" height="100"></canvas>
+@if (@Model.TimePeriod == "yesterday")
+{
+    @Html.ActionLink("View Today", "Details", "Stocks", new { symbol = @Model.Stocks.Symbol }, null)
+}
+else
+{
+    @Html.ActionLink("View Yesterday", "Details", "Stocks", new { symbol = @Model.Stocks.Symbol, timeperiod = "yesterday" }, null)
+}
 
+<br><br>
 @using (Html.BeginForm("Buy", "Portfolio"))
 {
     <div class="form-group">
@@ -78,6 +87,11 @@
                 }]
             },
             options: {
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
                 tooltips: {
                     model: 'label',
                     callbacks: {
