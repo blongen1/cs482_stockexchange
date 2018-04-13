@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -207,5 +208,30 @@ namespace stockExchange.Controllers
             }
         }
 
+        public void CheckPriceAlert()
+        {
+
+            MailMessage mailMessage = new MailMessage("b.longenecker2@gmail.com", "b.longenecker7@gmail.com");
+            mailMessage.Subject = "Hello World!";
+            mailMessage.Body = @"
+                        <html lang=""en"">
+                            <head>    
+                                
+                            </head>
+                            <body>
+                                " + _context.Stocks.ToList().Single(t => t.Symbol == "NVDA").CompanyName +
+                               @" has increased by 10% today!
+                            </body>
+                        </html>
+                        ";
+
+            mailMessage.IsBodyHtml = true;
+
+
+            SmtpClient smtpClient = new SmtpClient();
+            smtpClient.EnableSsl = true;
+            smtpClient.Send(mailMessage);
+
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace stockExchange
             GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
             RecurringJob.AddOrUpdate<StocksController>(x => x.UpdateStockPrices(), Cron.Minutely);
             RecurringJob.AddOrUpdate<StocksController>(x => x.BuildPriceHistory(), Cron.MinuteInterval(15));
+            RecurringJob.AddOrUpdate<StocksController>(x => x.CheckPriceAlert(), Cron.MinuteInterval(15));
             app.UseHangfireDashboard();
             app.UseHangfireServer();
         }
