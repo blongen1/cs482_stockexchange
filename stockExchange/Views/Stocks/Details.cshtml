@@ -15,6 +15,8 @@
     <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
 }
 
+<br />
+<h4>Market Summary for @Model.GraphDate:</h4>
 <canvas id="myChart" width="400" height="100"></canvas>
 @if (@Model.TimePeriod == "yesterday")
 {
@@ -22,7 +24,7 @@
 }
 else
 {
-    @Html.ActionLink("View Yesterday", "Details", "Stocks", new { symbol = @Model.Stocks.Symbol, timeperiod = "yesterday" }, null)
+    @Html.ActionLink("View Previous Day", "Details", "Stocks", new { symbol = @Model.Stocks.Symbol, timeperiod = "yesterday" }, null)
 }
 
 <br><br>

@@ -13,5 +13,6 @@ namespace stockExchange.ViewModels
         public int AmountOwned { get; set; }
         public List<double> DayPrices { get; set; }
         public string TimePeriod { get; set; }
+        public string GraphDate { get; set; }
     }
 }

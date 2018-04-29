@@ -131,8 +131,8 @@ namespace stockExchange.Controllers
                 Stocks = stocks,
                 AmountOwned = amountOwned,
                 DayPrices = dayPrices,
-                TimePeriod = timeperiod
-
+                TimePeriod = timeperiod,
+                GraphDate = new DateTime(year, month, day).ToString("MMMM dd, yyyy")
             };
 
             return View(viewModel);
@@ -211,27 +211,53 @@ namespace stockExchange.Controllers
         public void CheckPriceAlert()
         {
 
-            MailMessage mailMessage = new MailMessage("b.longenecker2@gmail.com", "b.longenecker7@gmail.com");
-            mailMessage.Subject = "Hello World!";
-            mailMessage.Body = @"
-                        <html lang=""en"">
-                            <head>    
-                                
-                            </head>
-                            <body>
-                                " + _context.Stocks.ToList().Single(t => t.Symbol == "NVDA").CompanyName +
-                               @" has increased by 10% today!
-                            </body>
-                        </html>
-                        ";
+            // If the market is currently open
+            /*
+            if ((DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30 ||
+                 DateTime.Now.Hour > 9 && DateTime.Now.Hour < 16 || DateTime.Now.Hour == 16 && DateTime.Now.Minute < 15)
+                && DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
+            {
+            */
+                var stocks = _context.Stocks;
 
-            mailMessage.IsBodyHtml = true;
+                foreach (var s in stocks)
+                {
+                    // If the price increased more than 10% for the day
+                    if (s.CurrentPrice / s.PreviousClose >= 1.10)
+                    {
+                    // Grab every user account that has email alerts set up
+                    //var users = _context.Users; //<-- Currently this does not work, some error
+                        //foreach (var u in users)
+                        //{
+                            // I am using the skeleton two factor authentication for email alerts
+                            //if (u.TwoFactorEnabled)
+                            //{
+                                MailMessage mailMessage = new MailMessage("b.longenecker2@gmail.com", "b.longenecker7@gmail.com");
+                                mailMessage.Subject = "Stock Simulator - Price Alert!";
+                                mailMessage.Body = @"
+                                            <html lang=""en"">
+                                                <head>    
+
+                                                </head>
+                                                <body>
+                                                    " + s.CompanyName + " has increased by " +
+                                                    string.Format("{0:0.00%}", s.CurrentPrice / s.PreviousClose - 1) +
+                                                    @" today!
+                                                </body>
+                                            </html>
+                                            ";
+
+                                mailMessage.IsBodyHtml = true;
 
 
-            SmtpClient smtpClient = new SmtpClient();
-            smtpClient.EnableSsl = true;
-            smtpClient.Send(mailMessage);
-
+                                SmtpClient smtpClient = new SmtpClient();
+                                smtpClient.EnableSsl = true;
+                                smtpClient.Send(mailMessage);
+                            //}
+                        //}
+                    }
+                }
+            //}
         }
     }
 }
