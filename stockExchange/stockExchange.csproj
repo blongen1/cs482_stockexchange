@@ -204,6 +204,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PortfolioController.cs" />
@@ -244,8 +245,13 @@
     <Compile Include="Migrations\201804082009027_AddPriceHistoryTable.Designer.cs">
       <DependentUpon>201804082009027_AddPriceHistoryTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201805021911266_AddAlertsTable.cs" />
+    <Compile Include="Migrations\201805021911266_AddAlertsTable.Designer.cs">
+      <DependentUpon>201805021911266_AddAlertsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Alerts.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Portfolio.cs" />
@@ -495,6 +501,7 @@
     <Content Include="Views\Stocks\Details.cshtml" />
     <Content Include="Views\Portfolio\Index.cshtml" />
     <Content Include="Views\Portfolio\Transactions.cshtml" />
+    <Content Include="Views\Alerts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -531,6 +538,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804082009027_AddPriceHistoryTable.resx">
       <DependentUpon>201804082009027_AddPriceHistoryTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201805021911266_AddAlertsTable.resx">
+      <DependentUpon>201805021911266_AddAlertsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

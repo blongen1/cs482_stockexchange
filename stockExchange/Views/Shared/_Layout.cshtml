@@ -22,11 +22,11 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Stocks", "Index", "Stocks")</li>
                         <li>@Html.ActionLink("Portfolio", "Index", "Portfolio")</li>
+                        <li>@Html.ActionLink("Alerts", "Index", "Alerts")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -37,7 +37,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>Created by: Brandon Longenecker</p>
+            Created by: Brandon Longenecker<div class="pull-right">Dislaimer: Information is provided solely for informational purposes, not for advice.</div>
         </footer>
     </div>
 

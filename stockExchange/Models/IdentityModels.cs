@@ -25,6 +25,7 @@ namespace stockExchange.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Alerts> Alerts { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Stocks> Stocks { get; set; }
         public DbSet<PriceHistory> PriceHistory { get; set; }
