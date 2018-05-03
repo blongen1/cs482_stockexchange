@@ -1,8 +1,69 @@
 ﻿@using Microsoft.AspNet.Identity
-@using stockExchange.Extensions
+@using stockExchange.Extensions;
+@model stockExchange.ViewModels.AlertsViewModel
 
 @{
     ViewBag.Title = "Email Alerts";
 }
 
 <h2>Email Alerts for @User.Identity.GetUserName()</h2>
+
+@if (TempData["error"] != null)
+{
+    <p class="alert alert-danger" id="errorMessage">@TempData["error"]</p>
+}
+
+<br/>
+@if (!@Model.Alertses.Any())
+{
+    <h3>You don't currently have any alerts set up!</h3>
+}
+else
+{
+    <h3>Your currently set up alert(s):</h3>
+
+    <table id="alerts" class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>Email address</th>
+            <th>Price Change</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var alert in @Model.Alertses)
+        {
+            <tr>
+                <td>@alert.EmailAddress</td>
+                <td>@alert.PercentChange %</td>
+                @using (Html.BeginForm("DeleteAlert", "Alerts", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.HiddenFor(m => m.Alerts.Id, new {Value = alert.Id})
+                    </div>
+                    <td>
+                    <input type="submit" class="button" value="Delete" />
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}
+
+<br/>
+<h3> Add a price alert:</h3>
+@using (Html.BeginForm("AddAlert", "Alerts"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Alerts.PercentChange)
+        @Html.TextBoxFor(m => m.Alerts.PercentChange, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.HiddenFor(m => m.Alerts.EmailAddress, new { Value = User.Identity.GetUserName() })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Alert</button>
+}

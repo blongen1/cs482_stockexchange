@@ -259,6 +259,7 @@
     <Compile Include="Models\Stocks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AlertsViewModel.cs" />
     <Compile Include="ViewModels\DetailsViewModel.cs" />
     <Compile Include="ViewModels\PortfolioViewModel.cs" />
   </ItemGroup>
