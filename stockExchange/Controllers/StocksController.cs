@@ -211,48 +211,53 @@ namespace stockExchange.Controllers
 
         public void CheckPriceAlert()
         {
+            var stocks = _context.Stocks.ToList();
+            var alerts = _context.Alerts.ToList();
 
-            // If the market is currently open
-            /*
-            if ((DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30 ||
-                 DateTime.Now.Hour > 9 && DateTime.Now.Hour < 16 || DateTime.Now.Hour == 16 && DateTime.Now.Minute < 15)
-                && DateTime.Now.DayOfWeek != DayOfWeek.Saturday && DateTime.Now.DayOfWeek != DayOfWeek.Sunday)
-            {*/
-            
-                var stocks = _context.Stocks;
+            foreach (var m in alerts)
+            {
                 var message = "";
-                
+
                 foreach (var s in stocks)
                 {
-                    
-                    // If the price increased more than 10% for the day
-                    if (s.CurrentPrice / s.PreviousClose >= 1.02)
+                    if (m.PercentChange > 0)
                     {
-                        
-                        // I SHOULD CHANGE HOW THIS WORKS ENTIRELY. SETTING UP A TABLE FOR WHO GETS EMAILS WOULD FIX THIS USERS LIST ISSUE
-                        // NEED TO THINK OF THE SIMPLEST WAY TO MAKE IT WORK
+                        // If the price increased more than the set value for the day
+                        if (s.CurrentPrice / s.PreviousClose >= (1 + m.PercentChange / 100.0f))
+                        {
 
+                            message += s.CompanyName + " (" + s.Symbol + ") has increased by " +
+                                       string.Format("{0:0.00%}", s.CurrentPrice / s.PreviousClose - 1) +
+                                       " today!" + "<br />";
+                        }
+                    }
+                    else
+                    {
+                        // If the price decreased more than the set value for the day
+                        if (s.CurrentPrice / s.PreviousClose <= (1 + m.PercentChange / 100.0f))
+                        {
 
-                    // Grab every user account that has email alerts set up
-                        //var userStore = new UserStore<ApplicationUser>(_context); //<-- Currently this does not work, some error
-                        //foreach (var u in userStore.Users)
-                        //{
-                           // if (u.TwoFactorEnabled)
-                            //{
-                                message += s.CompanyName + " (" + s.Symbol + ") has increased by " +
-                                           string.Format("{0:0.00%}", s.CurrentPrice / s.PreviousClose - 1) +
-                                           " today!" + "<br />";
-                            //}
-                        //}
+                            message += s.CompanyName + " (" + s.Symbol + ") has increased by " +
+                                       string.Format("{0:0.00%}", s.CurrentPrice / s.PreviousClose - 1) +
+                                       " today!" + "<br />";
+                        }
                     }
                 }
 
                 if (message != "")
                 {
-                    MailMessage mailMessage = new MailMessage("b.longenecker2@gmail.com", "b.longenecker7@gmail.com");
+                    MailMessage mailMessage =
+                        new MailMessage("b.longenecker2@gmail.com", m.EmailAddress);
                     mailMessage.Subject = "Stock Simulator - Price Alert!";
-                    
-                    mailMessage.Body = message.Insert(0, "Todays Biggest Stock Increases: <br /><br />");
+
+                    if (m.PercentChange > 0)
+                    {
+                        mailMessage.Body = message.Insert(0, "Todays Biggest Stock Increases: <br /><br />");
+                    }
+                    else
+                    {
+                        mailMessage.Body = message.Insert(0, "Todays Biggest Stock Decreases: <br /><br />");
+                    }
 
                     mailMessage.IsBodyHtml = true;
 
@@ -260,9 +265,8 @@ namespace stockExchange.Controllers
                     SmtpClient smtpClient = new SmtpClient();
                     smtpClient.EnableSsl = true;
                     smtpClient.Send(mailMessage);
-
                 }
-            //}
+            }
         }
     }
 }
