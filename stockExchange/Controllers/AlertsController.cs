@@ -29,14 +29,12 @@ namespace stockExchange.Controllers
         // GET: Alerts
         public ActionResult Index()
         {
-            var userId = User.Identity.GetUserName();
-
-            if (userId == null)
+            if (!Request.IsAuthenticated)
             {
                 return RedirectToRoute(new { controller = "Account", action = "Login" });
             }
 
-            var alerts = _context.Alerts.ToList().Where(t => t.EmailAddress == userId);
+            var alerts = _context.Alerts.ToList().Where(t => t.EmailAddress == User.Identity.GetUserName());
 
             var viewModel = new AlertsViewModel
             {
